@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -19,9 +20,11 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
+        'username',
         'password',
+        'role',
+        'status',
+        'has_agreed_to_rules',
     ];
 
     /**
@@ -42,8 +45,58 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'has_agreed_to_rules' => 'boolean',
         ];
+    }
+
+    /** @return HasOne<Admin, $this> */
+    public function admin(): HasOne
+    {
+        return $this->hasOne(Admin::class);
+    }
+
+    /** @return HasOne<Mentor, $this> */
+    public function mentor(): HasOne
+    {
+        return $this->hasOne(Mentor::class);
+    }
+
+    /** @return HasOne<Mahasiswa, $this> */
+    public function mahasiswa(): HasOne
+    {
+        return $this->hasOne(Mahasiswa::class);
+    }
+
+    /** @return HasMany<Pesan, $this> */
+    public function pesanTerkirim(): HasMany
+    {
+        return $this->hasMany(Pesan::class, 'pengirim_id');
+    }
+
+    /** @return HasMany<Pesan, $this> */
+    public function pesanDiterima(): HasMany
+    {
+        return $this->hasMany(Pesan::class, 'penerima_id');
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isMentor(): bool
+    {
+        return $this->role === 'mentor';
+    }
+
+    public function isMahasiswa(): bool
+    {
+        return $this->role === 'mahasiswa';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
     }
 }

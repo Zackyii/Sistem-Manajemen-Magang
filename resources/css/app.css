@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,6 +7,172 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Typography */
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Hanken Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* SIMANG Color Palette */
+    /* Primary — Navy Blue */
+    --color-primary-50: oklch(0.97 0.02 250);
+    --color-primary-100: oklch(0.93 0.05 250);
+    --color-primary-200: oklch(0.85 0.10 250);
+    --color-primary-300: oklch(0.73 0.16 250);
+    --color-primary-400: oklch(0.60 0.20 250);
+    --color-primary-500: oklch(0.48 0.22 250);
+    --color-primary-600: oklch(0.40 0.22 250);
+    --color-primary-700: oklch(0.34 0.20 250);
+    --color-primary-800: oklch(0.28 0.17 250);
+    --color-primary-900: oklch(0.22 0.13 250);
+
+    /* Secondary — Sky Blue */
+    --color-secondary-50: oklch(0.97 0.04 220);
+    --color-secondary-100: oklch(0.92 0.08 220);
+    --color-secondary-200: oklch(0.84 0.13 220);
+    --color-secondary-300: oklch(0.74 0.18 220);
+    --color-secondary-400: oklch(0.66 0.19 220);
+    --color-secondary-500: oklch(0.58 0.18 220);
+    --color-secondary-600: oklch(0.50 0.17 220);
+    --color-secondary-700: oklch(0.42 0.15 220);
+    --color-secondary-800: oklch(0.35 0.12 220);
+    --color-secondary-900: oklch(0.28 0.09 220);
+
+    /* Tertiary — Golden Yellow */
+    --color-tertiary-50: oklch(0.98 0.03 85);
+    --color-tertiary-100: oklch(0.95 0.07 85);
+    --color-tertiary-200: oklch(0.90 0.14 85);
+    --color-tertiary-300: oklch(0.84 0.18 85);
+    --color-tertiary-400: oklch(0.79 0.20 85);
+    --color-tertiary-500: oklch(0.75 0.19 85);
+    --color-tertiary-600: oklch(0.65 0.17 85);
+    --color-tertiary-700: oklch(0.54 0.14 85);
+    --color-tertiary-800: oklch(0.43 0.11 85);
+    --color-tertiary-900: oklch(0.33 0.08 85);
+
+    /* Semantic / Brand Shortcuts (matches #1E40AF, #3BBDFB, #FBBF24) */
+    --color-brand-navy: #1E40AF;
+    --color-brand-sky: #3BBDFB;
+    --color-brand-gold: #FBBF24;
+    --color-brand-gray: #76767F;
+}
+
+/* Base Styles */
+@layer base {
+    html {
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-heading);
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-800;
+    }
+}
+
+/* Component Utilities */
+@layer components {
+    /* Sidebar */
+    .sidebar-nav-item {
+        @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 cursor-pointer;
+        color: #64748b;
+    }
+
+    .sidebar-nav-item:hover {
+        background-color: #eff6ff;
+        color: #1E40AF;
+    }
+
+    .sidebar-nav-item.active {
+        background-color: #1E40AF;
+        color: white;
+    }
+
+    /* Cards */
+    .stat-card {
+        @apply bg-white rounded-xl border border-gray-100 p-4 shadow-sm;
+    }
+
+    /* Primary Button */
+    .btn-primary {
+        @apply inline-flex items-center gap-2 px-4 py-2.5 bg-[#1E40AF] text-white text-sm font-semibold rounded-lg transition-all duration-200;
+    }
+
+    .btn-primary:hover {
+        background-color: #1d3a9e;
+    }
+
+    /* Secondary Button */
+    .btn-secondary {
+        @apply inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-700 transition-all duration-200;
+    }
+
+    .btn-secondary:hover {
+        @apply bg-gray-50;
+    }
+
+    /* Badge */
+    .badge-hadir {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700;
+    }
+
+    .badge-izin {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700;
+    }
+
+    .badge-pending {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-100 text-orange-700;
+    }
+
+    .badge-disetujui {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700;
+    }
+
+    .badge-ditolak {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700;
+    }
+
+    .badge-penting {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700;
+    }
+
+    .badge-info {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700;
+    }
+
+    .badge-sistem {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700;
+    }
+
+    /* Table */
+    .data-table {
+        @apply w-full text-sm text-left;
+    }
+
+    .data-table th {
+        @apply px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100;
+    }
+
+    .data-table td {
+        @apply px-4 py-3 border-b border-gray-50;
+    }
+
+    .data-table tr:last-child td {
+        @apply border-b-0;
+    }
+
+    /* Form Input */
+    .form-input {
+        @apply w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 bg-white transition-all duration-200;
+    }
+
+    .form-input:focus {
+        @apply outline-none ring-2 border-[#1E40AF];
+        --tw-ring-color: #1E40AF40;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1.5;
+    }
 }
