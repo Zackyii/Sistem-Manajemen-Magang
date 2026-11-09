@@ -92,6 +92,39 @@ class PresensiController extends Controller
         $rows = $query->get();
         $bidangNama = $mentor->bidang?->nama_bidang ?? '-';
 
+        // Build per-mahasiswa attendance statistics over the ENTIRE magang period.
+        // Statistics are independent of the export period filter (per approval: Opsi A + full period).
+        $mahasiswaStats = [];
+        foreach ($mahasiswas as $mhs) {
+            // Determine effective end date: use tanggal_selesai if already past, otherwise today.
+            $endDate = ($mhs->tanggal_selesai && Carbon::parse($mhs->tanggal_selesai)->isPast())
+                ? Carbon::parse($mhs->tanggal_selesai)->toDateString()
+                : today()->toDateString();
+
+            $allRecords = Kehadiran::where('mahasiswa_id', $mhs->id)
+                ->when($mhs->tanggal_mulai, fn ($q) => $q->whereDate('tanggal', '>=', $mhs->tanggal_mulai))
+                ->whereDate('tanggal', '<=', $endDate)
+                ->get();
+
+            $total = $allRecords->count();
+            $jumlahHadir = $allRecords->whereIn('status', ['hadir', 'terlambat'])->count();
+            $jumlahIzin = $allRecords->where('status', 'izin')->count();
+            $jumlahSakit = $allRecords->where('status', 'sakit')->count();
+            $jumlahAlpha = $allRecords->where('status', 'alpha')->count();
+
+            $mahasiswaStats[$mhs->id] = [
+                'total' => $total,
+                'hadir' => $jumlahHadir,
+                'izin' => $jumlahIzin,
+                'sakit' => $jumlahSakit,
+                'alpha' => $jumlahAlpha,
+                'pct_hadir' => $total > 0 ? number_format(($jumlahHadir / $total) * 100, 2).'%' : '0.00%',
+                'pct_izin' => $total > 0 ? number_format(($jumlahIzin / $total) * 100, 2).'%' : '0.00%',
+                'pct_sakit' => $total > 0 ? number_format(($jumlahSakit / $total) * 100, 2).'%' : '0.00%',
+                'pct_alpha' => $total > 0 ? number_format(($jumlahAlpha / $total) * 100, 2).'%' : '0.00%',
+            ];
+        }
+
         // Build CSV in-memory
         $output = fopen('php://temp', 'r+');
         fputcsv($output, [
@@ -101,12 +134,27 @@ class PresensiController extends Controller
             'Koordinat Masuk', 'Lokasi Masuk',
             'Koordinat Keluar', 'Lokasi Keluar',
             'Keterangan',
+            'Total Record Presensi (Selama Magang)',
+            'Jumlah Hadir (Tepat+Terlambat)',
+            'Persentase Hadir Selama Magang',
+            'Jumlah Izin',
+            'Persentase Izin Selama Magang',
+            'Jumlah Sakit',
+            'Persentase Sakit Selama Magang',
+            'Jumlah Tidak Hadir (Alpha)',
+            'Persentase Tidak Hadir Selama Magang',
         ]);
 
         foreach ($rows as $i => $item) {
             $mhs = $item->mahasiswa;
             $latIn = $item->koordinat_lat ? "{$item->koordinat_lat},{$item->koordinat_lng}" : '-';
             $latOut = $item->koordinat_lat_checkout ? "{$item->koordinat_lat_checkout},{$item->koordinat_lng_checkout}" : '-';
+
+            // Retrieve pre-computed stats for this mahasiswa (default to zeroes if not in list).
+            $stats = $mahasiswaStats[$mhs?->id] ?? [
+                'total' => 0, 'hadir' => 0, 'izin' => 0, 'sakit' => 0, 'alpha' => 0,
+                'pct_hadir' => '0.00%', 'pct_izin' => '0.00%', 'pct_sakit' => '0.00%', 'pct_alpha' => '0.00%',
+            ];
 
             fputcsv($output, [
                 $i + 1,
@@ -125,6 +173,15 @@ class PresensiController extends Controller
                 $latOut,
                 $item->nama_lokasi_checkout ?? '-',
                 $item->keterangan ?? '-',
+                $stats['total'],
+                $stats['hadir'],
+                $stats['pct_hadir'],
+                $stats['izin'],
+                $stats['pct_izin'],
+                $stats['sakit'],
+                $stats['pct_sakit'],
+                $stats['alpha'],
+                $stats['pct_alpha'],
             ]);
         }
 

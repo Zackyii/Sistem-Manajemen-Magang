@@ -6,14 +6,14 @@
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-xl font-extrabold text-slate-900 font-heading">Publikasi Pengumuman Magang</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Kirimkan instruksi, agenda dinas, atau informasi penting kepada peserta magang</p>
+            <h1 class="text-xl font-extrabold text-slate-900 dark:text-white font-heading">Publikasi Pengumuman Magang</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Kirimkan instruksi, agenda dinas, atau informasi penting kepada peserta magang</p>
         </div>
     </div>
 
     <!-- Create Announcement Form Card -->
-    <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200/80 space-y-4">
-        <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+    <div class="rounded-3xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             Tulis Pengumuman Baru
         </h2>
@@ -23,13 +23,13 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="sm:col-span-2">
-                    <label for="judul" class="block font-bold uppercase tracking-wider text-slate-700 mb-1">Judul Pengumuman</label>
-                    <input type="text" id="judul" name="judul" required placeholder="Contoh: Petunjuk Pelaksanaan Apel Pagi dan Seragam Magang" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20">
+                    <label for="judul" class="block font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Judul Pengumuman</label>
+                    <input type="text" id="judul" name="judul" required placeholder="Contoh: Petunjuk Pelaksanaan Apel Pagi dan Seragam Magang" class="w-full rounded-xl border border-slate-300 dark:border-slate-600 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 bg-white dark:bg-slate-900 dark:text-slate-200">
                 </div>
 
                 <div>
-                    <label for="tipe" class="block font-bold uppercase tracking-wider text-slate-700 mb-1">Kategori / Tingkat</label>
-                    <select id="tipe" name="tipe" required class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none">
+                    <label for="tipe" class="block font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Kategori / Tingkat</label>
+                    <select id="tipe" name="tipe" required class="w-full rounded-xl border border-slate-300 dark:border-slate-600 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none bg-white dark:bg-slate-900 dark:text-slate-200">
                         <option value="info">Info Umum</option>
                         <option value="penting">Penting (Mendesak)</option>
                         <option value="sistem">Pemberitahuan Sistem</option>
@@ -38,8 +38,8 @@
             </div>
 
             <div>
-                <label for="bidang_id" class="block font-bold uppercase tracking-wider text-slate-700 mb-1">Sasaran Pengumuman</label>
-                <select id="bidang_id" name="bidang_id" class="w-full sm:w-1/2 rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none">
+                <label for="bidang_id" class="block font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Sasaran Pengumuman</label>
+                <select id="bidang_id" name="bidang_id" class="w-full sm:w-1/2 rounded-xl border border-slate-300 dark:border-slate-600 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none bg-white dark:bg-slate-900 dark:text-slate-200">
                     <option value="">Semua Mahasiswa (Seluruh Bidang)</option>
                     @foreach ($bidangs as $bidang)
                         <option value="{{ $bidang->id }}">Khusus Bidang: {{ $bidang->nama_bidang }}</option>
@@ -48,8 +48,8 @@
             </div>
 
             <div>
-                <label for="isi_pengumuman" class="block font-bold uppercase tracking-wider text-slate-700 mb-1">Isi Pesan Pengumuman</label>
-                <textarea id="isi_pengumuman" name="isi_pengumuman" rows="4" required placeholder="Tuliskan detail pengumuman resmi di sini..." class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 leading-relaxed"></textarea>
+                <label for="isi_pengumuman" class="block font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">Isi Pesan Pengumuman</label>
+                <textarea id="isi_pengumuman" name="isi_pengumuman" rows="4" required placeholder="Tuliskan detail pengumuman resmi di sini..." class="w-full rounded-xl border border-slate-300 dark:border-slate-600 px-3.5 py-2.5 text-xs focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 leading-relaxed bg-white dark:bg-slate-900 dark:text-slate-200"></textarea>
             </div>
 
             <div class="flex justify-end">
@@ -62,45 +62,45 @@
     </div>
 
     <!-- Announcement History Table -->
-    <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200/80 space-y-4">
-        <h2 class="text-sm font-bold text-slate-900">Riwayat Pengumuman Diterbitkan</h2>
+    <div class="rounded-3xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 dark:text-white">Riwayat Pengumuman Diterbitkan</h2>
 
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs border-collapse">
                 <thead>
-                    <tr class="border-b border-slate-200 bg-slate-50/70 text-slate-600 font-semibold uppercase tracking-wider">
-                        <th class="p-3">Judul & Isi</th>
+                    <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider">
+                        <th class="p-3">Judul &amp; Isi</th>
                         <th class="p-3">Target Sasaran</th>
                         <th class="p-3">Kategori</th>
                         <th class="p-3">Tanggal Diterbitkan</th>
                         <th class="p-3 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                     @forelse ($pengumumans as $item)
-                        <tr class="hover:bg-slate-50/50">
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30">
                             <td class="p-3 max-w-md">
-                                <p class="font-bold text-slate-900 text-sm">{{ $item->judul }}</p>
-                                <p class="text-slate-500 mt-1 line-clamp-2 leading-relaxed">{{ $item->isi_pengumuman }}</p>
+                                <p class="font-bold text-slate-900 dark:text-white text-sm">{{ $item->judul }}</p>
+                                <p class="text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">{{ $item->isi_pengumuman }}</p>
                             </td>
                             <td class="p-3 whitespace-nowrap">
                                 @if ($item->bidang)
-                                    <span class="font-semibold text-blue-700">{{ $item->bidang->nama_bidang }}</span>
+                                    <span class="font-semibold text-blue-700 dark:text-blue-400">{{ $item->bidang->nama_bidang }}</span>
                                 @else
-                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700">Semua Bidang</span>
+                                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Semua Bidang</span>
                                 @endif
                             </td>
                             <td class="p-3 whitespace-nowrap">
                                 <x-badge :status="$item->tipe" />
                             </td>
-                            <td class="p-3 whitespace-nowrap text-slate-600">
+                            <td class="p-3 whitespace-nowrap text-slate-600 dark:text-slate-400">
                                 {{ \Carbon\Carbon::parse($item->tanggal_publikasi)->translatedFormat('d M Y, H:i') }} WIB
                             </td>
                             <td class="p-3 text-right whitespace-nowrap">
                                 <form action="{{ route('admin.pengumuman.destroy', $item) }}" method="POST" onsubmit="return confirm('Hapus pengumuman ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 font-bold text-rose-600">
+                                    <button type="submit" class="px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-900/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 font-bold text-rose-600 dark:text-rose-400">
                                         Hapus
                                     </button>
                                 </form>
@@ -116,7 +116,7 @@
         </div>
 
         @if ($pengumumans->hasPages())
-            <div class="pt-4 border-t border-slate-100">
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
                 {{ $pengumumans->links() }}
             </div>
         @endif

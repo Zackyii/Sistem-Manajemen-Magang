@@ -12,47 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    <!-- Fallback Tailwind CSS via CDN if Vite dev server is not active -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        },
-                        secondary: {
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                        },
-                        tertiary: {
-                            400: '#fbbf24',
-                            500: '#f59e0b',
-                        },
-                        brand: {
-                            navy: '#1E40AF',
-                            sky: '#3BBDFB',
-                            gold: '#FBBF24',
-                            gray: '#76767F'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        heading: ['Hanken Grotesk', 'Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
         h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Hanken Grotesk', 'Inter', sans-serif; }

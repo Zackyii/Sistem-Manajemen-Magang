@@ -20,30 +20,30 @@
         </div>
 
         <!-- Card Container -->
-        <div class="mt-8 bg-white/95 backdrop-blur-md py-8 px-6 shadow-2xl rounded-3xl sm:px-10 border border-white/20 text-slate-800">
+        <div class="mt-8 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md py-8 px-6 shadow-2xl rounded-3xl sm:px-10 border border-white/20 dark:border-slate-700/50 text-slate-800 dark:text-slate-200">
             <x-alert />
 
             <form class="space-y-5" action="{{ route('login.post') }}" method="POST">
                 @csrf
 
                 <div>
-                    <label for="username" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Username</label>
+                    <label for="username" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Username</label>
                     <div class="mt-1.5 relative">
-                        <input id="username" name="username" type="text" autocomplete="username" required value="{{ old('username') }}" placeholder="Masukkan username Anda" class="block w-full rounded-xl border border-slate-300 px-4 py-3 text-sm placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all">
+                        <input id="username" name="username" type="text" autocomplete="username" required value="{{ old('username') }}" placeholder="Masukkan username Anda" class="block w-full rounded-xl border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all bg-white dark:bg-slate-900 dark:text-slate-200">
                     </div>
                 </div>
 
                 <div>
-                    <label for="password" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Password</label>
+                    <label for="password" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Password</label>
                     <div class="mt-1.5 relative">
-                        <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" class="block w-full rounded-xl border border-slate-300 px-4 py-3 text-sm placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all">
+                        <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" class="block w-full rounded-xl border border-slate-300 dark:border-slate-600 px-4 py-3 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition-all bg-white dark:bg-slate-900 dark:text-slate-200">
                     </div>
                 </div>
 
                 <div class="flex items-center justify-between">
                     <div class="flex items-center">
-                        <input id="remember" name="remember" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                        <label for="remember" class="ml-2 block text-xs text-slate-600">Ingat saya</label>
+                        <input id="remember" name="remember" type="checkbox" class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500">
+                        <label for="remember" class="ml-2 block text-xs text-slate-600 dark:text-slate-400">Ingat saya</label>
                     </div>
                     <span class="text-xs text-slate-400">Hubungi admin jika lupa password</span>
                 </div>
@@ -56,16 +56,16 @@
             </form>
 
             <!-- Quick Demo Credentials Box for Evaluation -->
-            <div class="mt-6 pt-6 border-t border-slate-200/80">
+            <div class="mt-6 pt-6 border-t border-slate-200/80 dark:border-slate-700">
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider text-center mb-3">Pilihan Akun Demo (Klik untuk mengisi):</p>
                 <div class="grid grid-cols-3 gap-2">
-                    <button type="button" onclick="fillCredentials('admin', 'admin123')" class="px-2 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold text-center transition-colors">
+                    <button type="button" onclick="fillCredentials('admin', 'admin123')" class="px-2 py-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 text-xs font-semibold text-center transition-colors">
                         Admin
                     </button>
-                    <button type="button" onclick="fillCredentials('mentor_aptika', 'password123')" class="px-2 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold text-center transition-colors">
+                    <button type="button" onclick="fillCredentials('mentor_aptika', 'password123')" class="px-2 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-xs font-semibold text-center transition-colors">
                         Mentor
                     </button>
-                    <button type="button" onclick="fillCredentials('mahasiswa', 'mahasiswa123')" class="px-2 py-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold text-center transition-colors">
+                    <button type="button" onclick="fillCredentials('mahasiswa', 'mahasiswa123')" class="px-2 py-2 rounded-lg bg-emerald-50 dark:bg-emerald-900/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 text-xs font-semibold text-center transition-colors">
                         Mahasiswa
                     </button>
                 </div>

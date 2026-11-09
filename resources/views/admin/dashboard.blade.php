@@ -35,11 +35,11 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Pending Students Table -->
-        <div class="lg:col-span-2 rounded-3xl bg-white p-6 shadow-sm border border-slate-200/80 space-y-4">
+        <div class="lg:col-span-2 rounded-3xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-base font-bold text-slate-900 font-heading">Pendaftaran Mahasiswa Baru (Pending)</h2>
-                    <p class="text-xs text-slate-500">Periksa dan setujui penempatan bidang peserta magang</p>
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white font-heading">Pendaftaran Mahasiswa Baru (Pending)</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Periksa dan setujui penempatan bidang peserta magang</p>
                 </div>
                 <a href="{{ route('admin.mahasiswa.index', ['status' => 'pending']) }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">
                     Lihat Semua &rarr;
@@ -49,29 +49,29 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs border-collapse">
                     <thead>
-                        <tr class="border-b border-slate-200 bg-slate-50/70 text-slate-600 font-semibold uppercase tracking-wider">
+                        <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 font-semibold uppercase tracking-wider">
                             <th class="p-3">Nama</th>
                             <th class="p-3">Universitas & Prodi</th>
                             <th class="p-3">Bidang Diminta</th>
                             <th class="p-3 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
                         @forelse ($mahasiswaPending as $mhs)
-                            <tr class="hover:bg-slate-50/50">
+                            <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-700/30">
                                 <td class="p-3">
-                                    <p class="font-bold text-slate-800">{{ $mhs->nama }}</p>
+                                    <p class="font-bold text-slate-800 dark:text-slate-200">{{ $mhs->nama }}</p>
                                     <p class="text-slate-400 font-mono text-[11px]">{{ $mhs->user->username ?? '-' }}</p>
                                 </td>
                                 <td class="p-3">
-                                    <p class="font-medium text-slate-700">{{ $mhs->asal_universitas }}</p>
+                                    <p class="font-medium text-slate-700 dark:text-slate-300">{{ $mhs->asal_universitas }}</p>
                                     <p class="text-slate-400 text-[11px]">{{ $mhs->program_studi }}</p>
                                 </td>
                                 <td class="p-3">
-                                    <span class="font-semibold text-blue-700">{{ $mhs->bidang->nama_bidang ?? 'Belum ada' }}</span>
+                                    <span class="font-semibold text-blue-700 dark:text-blue-400">{{ $mhs->bidang->nama_bidang ?? 'Belum ada' }}</span>
                                 </td>
                                 <td class="p-3 text-right whitespace-nowrap">
-                                    <a href="{{ route('admin.mahasiswa.show', $mhs) }}" class="px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 font-bold hover:bg-blue-100 transition-colors">
+                                    <a href="{{ route('admin.mahasiswa.show', $mhs) }}" class="px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors">
                                         Verifikasi
                                     </a>
                                 </td>
@@ -89,21 +89,21 @@
         </div>
 
         <!-- Latest Announcements Card -->
-        <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200/80 space-y-4">
+        <div class="rounded-3xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200/80 dark:border-slate-700 space-y-4">
             <div class="flex items-center justify-between">
-                <h2 class="text-base font-bold text-slate-900 font-heading">Pengumuman Kedinasan</h2>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white font-heading">Pengumuman Kedinasan</h2>
                 <a href="{{ route('admin.pengumuman.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-800">Kelola</a>
             </div>
 
             <div class="space-y-3">
                 @forelse ($pengumumanTerbaru as $pengumuman)
-                    <div class="p-3.5 rounded-2xl border border-slate-100 bg-slate-50/60 space-y-1.5">
+                    <div class="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-700/40 space-y-1.5">
                         <div class="flex items-center justify-between">
-                            <span class="font-bold text-xs text-slate-800 line-clamp-1">{{ $pengumuman->judul }}</span>
+                            <span class="font-bold text-xs text-slate-800 dark:text-slate-200 line-clamp-1">{{ $pengumuman->judul }}</span>
                             <x-badge :status="$pengumuman->tipe" />
                         </div>
-                        <p class="text-xs text-slate-500 line-clamp-2">{{ $pengumuman->isi_pengumuman }}</p>
-                        <span class="text-[10px] text-slate-400 block">{{ \Carbon\Carbon::parse($pengumuman->tanggal_publikasi)->translatedFormat('d M Y') }}</span>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">{{ $pengumuman->isi_pengumuman }}</p>
+                        <span class="text-[10px] text-slate-400 dark:text-slate-500 block">{{ \Carbon\Carbon::parse($pengumuman->tanggal_publikasi)->translatedFormat('d M Y') }}</span>
                     </div>
                 @empty
                     <div class="p-6 text-center text-slate-400 text-xs">

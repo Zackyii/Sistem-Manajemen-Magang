@@ -138,6 +138,3 @@ Sesuai arahan, fitur Chat/Pesan **TIDAK DIHAPUS**, melainkan **DINONAKTIFKAN (Co
   - Jalankan migrasi saat Docker aktif.
   - Jalankan `npm run build` atau `composer run dev` jika ada perubahan frontend yang belum terefleksikan di browser.
   - Konfirmasi visual di browser untuk bottom nav 4-item dan badge kontras baru.
-  - docker compose exec app php artisan migrate   jalankan command ini sebelum start
-
-
