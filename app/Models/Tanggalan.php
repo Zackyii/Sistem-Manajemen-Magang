@@ -26,6 +26,7 @@ class Tanggalan extends Model
         'info_libur_event',
         'status_logbook',
         'catatan_mentor',
+        'file_lampiran',
     ];
 
     protected function casts(): array

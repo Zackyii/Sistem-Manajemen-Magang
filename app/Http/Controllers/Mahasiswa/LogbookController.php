@@ -47,7 +47,7 @@ class LogbookController extends Controller
     }
 
     /**
-     * Store or update a logbook entry.
+     * Store or update a logbook entry, with optional file attachment.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -60,30 +60,40 @@ class LogbookController extends Controller
             'durasi_jam' => ['required', 'numeric', 'min:0.5', 'max:24'],
             'status_logbook' => ['nullable', 'string'],
             'submit' => ['nullable', 'boolean'],
+            'file_lampiran' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
         ]);
 
-        $status = ($request->input('status_logbook') === 'submitted' || $request->boolean('submit')) ? 'submitted' : 'draft';
+        $status = ($request->input('status_logbook') === 'submitted' || $request->boolean('submit'))
+            ? 'submitted'
+            : 'draft';
 
         $entry = Tanggalan::where('mahasiswa_id', $mahasiswa->id)
             ->whereDate('tanggal', $validated['tanggal'])
             ->first();
 
+        $updateData = [
+            'aktivitas_utama' => $validated['aktivitas_utama'],
+            'deskripsi_kegiatan' => $validated['deskripsi_kegiatan'],
+            'durasi_jam' => $validated['durasi_jam'],
+            'status_logbook' => $status,
+        ];
+
+        // Handle file upload — store on private disk
+        if ($request->hasFile('file_lampiran')) {
+            $file = $request->file('file_lampiran');
+            $ext = $file->getClientOriginalExtension();
+            $filename = 'lampiran-logbook/'.$mahasiswa->id.'_'.date('Ymd_His').'.'.$ext;
+            $file->storeAs(dirname($filename), basename($filename), ['disk' => 'local']);
+            $updateData['file_lampiran'] = $filename;
+        }
+
         if ($entry) {
-            $entry->update([
-                'aktivitas_utama' => $validated['aktivitas_utama'],
-                'deskripsi_kegiatan' => $validated['deskripsi_kegiatan'],
-                'durasi_jam' => $validated['durasi_jam'],
-                'status_logbook' => $status,
-            ]);
+            $entry->update($updateData);
         } else {
-            Tanggalan::create([
+            Tanggalan::create(array_merge($updateData, [
                 'mahasiswa_id' => $mahasiswa->id,
                 'tanggal' => $validated['tanggal'],
-                'aktivitas_utama' => $validated['aktivitas_utama'],
-                'deskripsi_kegiatan' => $validated['deskripsi_kegiatan'],
-                'durasi_jam' => $validated['durasi_jam'],
-                'status_logbook' => $status,
-            ]);
+            ]));
         }
 
         return redirect()->route('mahasiswa.logbook.index')
@@ -102,12 +112,9 @@ class LogbookController extends Controller
             ->orderBy('tanggal');
 
         $filter = $request->filter ?? 'monthly';
-
         $query = match ($filter) {
             'daily' => $query->whereDate('tanggal', $request->tanggal ?? today()),
-            'weekly' => $query->whereBetween('tanggal', [
-                now()->startOfWeek(), now()->endOfWeek(),
-            ]),
+            'weekly' => $query->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()]),
             default => $query->whereMonth('tanggal', now()->month)->whereYear('tanggal', now()->year),
         };
 

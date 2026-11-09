@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\Mahasiswa;
 use App\Http\Controllers\Mentor;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,18 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// ─── Protected File Serving Routes ────────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    // Presensi files: selfie check-in, bukti izin/sakit, foto check-out
+    Route::get('/files/presensi/{kehadiran}/{type}', [FileController::class, 'presensi'])
+        ->name('files.presensi')
+        ->where('type', 'selfie|bukti|checkout');
+
+    // Logbook attachments
+    Route::get('/files/logbook/{tanggalan}', [FileController::class, 'logbook'])
+        ->name('files.logbook');
+});
 
 // ─── Admin Routes ──────────────────────────────────────────────────────────────
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
@@ -43,26 +56,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::post('/pengumuman', [Admin\PengumumanController::class, 'store'])->name('pengumuman.store');
     Route::delete('/pengumuman/{pengumuman}', [Admin\PengumumanController::class, 'destroy'])->name('pengumuman.destroy');
 
-    // Admin Inbox
-    Route::get('/pesan', [Admin\PesanController::class, 'index'])->name('pesan.index');
-    Route::patch('/pesan/{pesan}/mark-read', [Admin\PesanController::class, 'markRead'])->name('pesan.mark-read');
+    // FITUR CHAT / PESAN DINONAKTIFKAN SEMENTARA (COMMENT-OUT ONLY — jangan hapus)
+    // Route::get('/pesan', [Admin\PesanController::class, 'index'])->name('pesan.index');
+    // Route::patch('/pesan/{pesan}/mark-read', [Admin\PesanController::class, 'markRead'])->name('pesan.mark-read');
 });
 
 // ─── Mentor Routes ─────────────────────────────────────────────────────────────
 Route::prefix('mentor')->name('mentor.')->middleware(['auth', 'role:mentor'])->group(function () {
     Route::get('/dashboard', [Mentor\DashboardController::class, 'index'])->name('dashboard');
 
-    // Presensi review
+    // Presensi monitoring (replaces approve/reject)
     Route::get('/presensi', [Mentor\PresensiController::class, 'index'])->name('presensi.index');
-    Route::post('/presensi/{kehadiran}/approve', [Mentor\PresensiController::class, 'approve'])->name('presensi.approve');
-    Route::post('/presensi/{kehadiran}/reject', [Mentor\PresensiController::class, 'reject'])->name('presensi.reject');
-    Route::post('/presensi/bulk-approve', [Mentor\PresensiController::class, 'bulkApprove'])->name('presensi.bulk-approve');
+    Route::get('/presensi/export', [Mentor\PresensiController::class, 'export'])->name('presensi.export');
 
     // Logbook review
     Route::get('/logbook', [Mentor\LogbookController::class, 'index'])->name('logbook.index');
     Route::get('/logbook/{tanggalan}', [Mentor\LogbookController::class, 'show'])->name('logbook.show');
     Route::post('/logbook/{tanggalan}/approve', [Mentor\LogbookController::class, 'approve'])->name('logbook.approve');
     Route::post('/logbook/{tanggalan}/reject', [Mentor\LogbookController::class, 'reject'])->name('logbook.reject');
+    Route::post('/logbook/bulk-approve', [Mentor\LogbookController::class, 'bulkApprove'])->name('logbook.bulk-approve');
 
     // Task assignment
     Route::get('/tugas', [Mentor\TugasController::class, 'index'])->name('tugas.index');
@@ -72,10 +84,10 @@ Route::prefix('mentor')->name('mentor.')->middleware(['auth', 'role:mentor'])->g
     Route::get('/penilaian', [Mentor\PenilaianController::class, 'index'])->name('penilaian.index');
     Route::post('/penilaian', [Mentor\PenilaianController::class, 'store'])->name('penilaian.store');
 
-    // Mentor Inbox & Messaging
-    Route::get('/pesan', [Mentor\PesanController::class, 'index'])->name('pesan.index');
-    Route::post('/pesan', [Mentor\PesanController::class, 'store'])->name('pesan.store');
-    Route::patch('/pesan/{pesan}/mark-read', [Mentor\PesanController::class, 'markRead'])->name('pesan.mark-read');
+    // FITUR CHAT / PESAN DINONAKTIFKAN SEMENTARA (COMMENT-OUT ONLY — jangan hapus)
+    // Route::get('/pesan', [Mentor\PesanController::class, 'index'])->name('pesan.index');
+    // Route::post('/pesan', [Mentor\PesanController::class, 'store'])->name('pesan.store');
+    // Route::patch('/pesan/{pesan}/mark-read', [Mentor\PesanController::class, 'markRead'])->name('pesan.mark-read');
 
     // Quota update (bidang kuota)
     Route::patch('/bidang/kuota', [Mentor\DashboardController::class, 'updateKuota'])->name('bidang.update-kuota');
@@ -106,9 +118,9 @@ Route::prefix('mahasiswa')->name('mahasiswa.')->middleware(['auth', 'role:mahasi
         Route::get('/tanggalan', [Mahasiswa\TanggalanController::class, 'index'])->name('tanggalan.index');
         Route::get('/tanggalan/detail', [Mahasiswa\TanggalanController::class, 'show'])->name('tanggalan.show');
 
-        // Messages & Reports
-        Route::get('/pesan', [Mahasiswa\PesanController::class, 'index'])->name('pesan.index');
-        Route::post('/pesan', [Mahasiswa\PesanController::class, 'store'])->name('pesan.store');
+        // FITUR CHAT / PESAN DINONAKTIFKAN SEMENTARA (COMMENT-OUT ONLY — jangan hapus)
+        // Route::get('/pesan', [Mahasiswa\PesanController::class, 'index'])->name('pesan.index');
+        // Route::post('/pesan', [Mahasiswa\PesanController::class, 'store'])->name('pesan.store');
 
         // Survey
         Route::get('/survey', [Mahasiswa\SurveyController::class, 'index'])->name('survey.index');

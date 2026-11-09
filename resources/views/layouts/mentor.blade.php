@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('body')
-<div class="min-h-screen flex bg-slate-100/70">
+<div class="min-h-screen flex bg-slate-100/70 dark:bg-slate-950">
     <!-- Sidebar Desktop -->
     <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 hidden md:flex min-h-screen border-r border-slate-800">
         <!-- Brand Header -->
@@ -29,7 +29,7 @@
             <a href="{{ route('mentor.presensi.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors {{ request()->routeIs('mentor.presensi.*') ? 'bg-blue-600 text-white font-semibold shadow-md shadow-blue-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Verifikasi Presensi
+                    Presensi Mahasiswa
                 </div>
             </a>
 
@@ -76,15 +76,20 @@
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col min-w-0">
         <!-- Topbar -->
-        <header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
+        <header class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
             <div class="flex items-center gap-4">
-                <h2 class="text-base font-bold text-slate-800">@yield('page-title', 'Dashboard Pembimbing')</h2>
+                <h2 class="text-base font-bold text-slate-800 dark:text-white">@yield('page-title', 'Dashboard Pembimbing')</h2>
             </div>
-            <div class="flex items-center gap-4 text-xs text-slate-500">
-                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-800 font-semibold border border-blue-100">
-                    <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            <div class="flex items-center gap-3 text-xs text-slate-500">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-slate-700 text-blue-800 dark:text-blue-300 font-semibold border border-blue-100 dark:border-slate-600 text-xs">
                     {{ auth()->user()->mentor->bidang->nama_bidang ?? 'Pembimbing Magang' }}
                 </div>
+                <!-- Theme Toggle -->
+                <button data-theme-toggle onclick="toggleTheme()" title="Ganti Tema"
+                    class="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg class="icon-sun w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z"/></svg>
+                    <svg class="icon-moon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
             </div>
         </header>
 

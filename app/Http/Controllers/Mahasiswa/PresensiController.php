@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Kehadiran;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -52,8 +53,8 @@ class PresensiController extends Controller
     }
 
     /**
-     * Store attendance check-in with selfie and GPS.
-     * NOTE: Photo is submitted as base64 from the camera capture — no gallery upload allowed.
+     * Store attendance check-in.
+     * Handles three types: hadir (selfie+GPS), izin (file bukti), sakit (file bukti).
      */
     public function checkIn(Request $request): RedirectResponse
     {
@@ -63,44 +64,81 @@ class PresensiController extends Controller
             return back()->withErrors(['presensi' => 'Anda sudah melakukan presensi hari ini.']);
         }
 
-        $request->validate([
-            'foto_selfie' => ['required', 'string'], // base64 image
-            'koordinat_lat' => ['required', 'numeric', 'between:-90,90'],
-            'koordinat_lng' => ['required', 'numeric', 'between:-180,180'],
-            'nama_lokasi' => ['nullable', 'string', 'max:255'],
-        ]);
+        $jenisPresensi = $request->input('jenis_presensi', 'hadir');
 
-        // Decode and store base64 selfie photo
-        $base64Image = $request->foto_selfie;
-        if (str_contains($base64Image, ',')) {
-            $base64Image = explode(',', $base64Image)[1];
+        // Validate based on type
+        if ($jenisPresensi === 'hadir') {
+            $request->validate([
+                'foto_selfie' => ['required', 'string'],
+                'koordinat_lat' => ['required', 'numeric', 'between:-90,90'],
+                'koordinat_lng' => ['required', 'numeric', 'between:-180,180'],
+                'nama_lokasi' => ['nullable', 'string', 'max:255'],
+            ]);
+        } else {
+            $request->validate([
+                'file_bukti' => ['required', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+                'keterangan' => ['nullable', 'string', 'max:500'],
+                'koordinat_lat' => ['nullable', 'numeric', 'between:-90,90'],
+                'koordinat_lng' => ['nullable', 'numeric', 'between:-180,180'],
+                'nama_lokasi' => ['nullable', 'string', 'max:255'],
+            ]);
         }
 
-        $imageName = 'selfies/'.$mahasiswa->id.'_'.date('Ymd_His').'.jpg';
-        Storage::disk('public')->put($imageName, base64_decode($base64Image));
-
-        $waktuMasuk = now()->toTimeString();
-        $batasTerlambat = '08:00:00';
-        $status = $waktuMasuk > $batasTerlambat ? 'terlambat' : 'hadir';
-
-        Kehadiran::create([
+        $data = [
             'mahasiswa_id' => $mahasiswa->id,
             'tanggal' => today()->toDateString(),
-            'waktu_masuk' => $waktuMasuk,
-            'foto_selfie' => $imageName,
+            'waktu_masuk' => now()->toTimeString(),
             'koordinat_lat' => $request->koordinat_lat,
             'koordinat_lng' => $request->koordinat_lng,
             'nama_lokasi' => $request->nama_lokasi,
-            'status' => $status,
             'status_mentor' => 'pending',
-        ]);
+            'keterangan' => $request->keterangan,
+        ];
+
+        if ($jenisPresensi === 'hadir') {
+            // Decode and store base64 selfie — stored in private disk
+            $base64Image = $request->foto_selfie;
+            if (str_contains($base64Image, ',')) {
+                $base64Image = explode(',', $base64Image)[1];
+            }
+            $decoded = base64_decode($base64Image, true);
+            if ($decoded === false || strlen($decoded) < 100) {
+                return back()->withErrors(['foto_selfie' => 'Data foto tidak valid.']);
+            }
+
+            $imageName = 'selfies/'.$mahasiswa->id.'_'.date('Ymd_His').'.jpg';
+            Storage::disk('local')->put($imageName, $decoded);
+            $data['foto_selfie'] = $imageName;
+
+            // Determine status by time
+            $waktuMasuk = now()->toTimeString();
+            $batasTerlambat = '08:00:00';
+            $data['status'] = $waktuMasuk > $batasTerlambat ? 'terlambat' : 'hadir';
+        } elseif ($jenisPresensi === 'izin') {
+            $data['status'] = 'izin';
+            $data['file_bukti'] = $this->storeUploadedFile($request->file('file_bukti'), 'bukti-izin', $mahasiswa->id);
+        } else {
+            // sakit
+            $data['status'] = 'sakit';
+            $data['file_bukti'] = $this->storeUploadedFile($request->file('file_bukti'), 'bukti-sakit', $mahasiswa->id);
+        }
+
+        Kehadiran::create($data);
+
+        $statusLabel = match ($data['status']) {
+            'hadir' => 'Hadir',
+            'terlambat' => 'Terlambat',
+            'izin' => 'Izin',
+            'sakit' => 'Izin Sakit',
+            default => ucfirst($data['status']),
+        };
 
         return redirect()->route('mahasiswa.presensi.index')
-            ->with('success', 'Presensi masuk berhasil dicatat. Status: '.ucfirst($status));
+            ->with('success', "Presensi berhasil dicatat. Status: {$statusLabel}.");
     }
 
     /**
-     * Store check-out time.
+     * Store check-out time and GPS location.
      */
     public function checkOut(Request $request): RedirectResponse
     {
@@ -115,9 +153,51 @@ class PresensiController extends Controller
                 ->withErrors(['presensi' => 'Anda sudah melakukan check-out hari ini.']);
         }
 
-        $kehadiran->update(['waktu_keluar' => now()->toTimeString()]);
+        $request->validate([
+            'foto_checkout' => ['nullable', 'string'],
+            'koordinat_lat_checkout' => ['nullable', 'numeric', 'between:-90,90'],
+            'koordinat_lng_checkout' => ['nullable', 'numeric', 'between:-180,180'],
+            'nama_lokasi_checkout' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $updateData = [
+            'waktu_keluar' => now()->toTimeString(),
+            'koordinat_lat_checkout' => $request->koordinat_lat_checkout,
+            'koordinat_lng_checkout' => $request->koordinat_lng_checkout,
+            'nama_lokasi_checkout' => $request->nama_lokasi_checkout,
+        ];
+
+        // Optional checkout selfie
+        if ($request->filled('foto_checkout')) {
+            $base64 = $request->foto_checkout;
+            if (str_contains($base64, ',')) {
+                $base64 = explode(',', $base64)[1];
+            }
+            $decoded = base64_decode($base64, true);
+            if ($decoded !== false && strlen($decoded) >= 100) {
+                $path = 'selfies/checkout_'.$mahasiswa->id.'_'.date('Ymd_His').'.jpg';
+                Storage::disk('local')->put($path, $decoded);
+                $updateData['foto_checkout'] = $path;
+            }
+        }
+
+        $kehadiran->update($updateData);
 
         return redirect()->route('mahasiswa.presensi.index')
             ->with('success', 'Check-out berhasil dicatat.');
+    }
+
+    /**
+     * Store an uploaded file to the private local disk.
+     *
+     * @return string The relative path stored in the database.
+     */
+    private function storeUploadedFile(UploadedFile $file, string $subfolder, int $mahasiswaId): string
+    {
+        $ext = $file->getClientOriginalExtension();
+        $filename = $subfolder.'/'.$mahasiswaId.'_'.date('Ymd_His').'.'.$ext;
+        $file->storeAs(dirname($filename), basename($filename), ['disk' => 'local']);
+
+        return $filename;
     }
 }

@@ -25,7 +25,7 @@
     @endif
 
     <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200/90">
-        <form action="{{ route('mahasiswa.logbook.store') }}" method="POST" class="space-y-5">
+        <form action="{{ route('mahasiswa.logbook.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf
 
             <!-- Tanggal Aktivitas -->
@@ -56,7 +56,24 @@
                 <textarea id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="6" required placeholder="Tuliskan detail pekerjaan secara terstruktur..." class="block w-full rounded-xl border border-slate-300 px-4 py-3 text-sm placeholder:text-slate-400 focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 leading-relaxed">{{ old('deskripsi_kegiatan', $existing->deskripsi_kegiatan ?? '') }}</textarea>
             </div>
 
+            <!-- Lampiran (Opsional) -->
+            <div>
+                <label for="file_lampiran" class="block text-xs font-bold uppercase tracking-wider text-slate-700">Lampiran Dokumen <span class="text-slate-400 font-normal normal-case">(Opsional)</span></label>
+                <p class="text-[11px] text-slate-500 mb-1.5">Unggah file pendukung kegiatan (laporan, hasil kerja, foto, dll). Format: JPG, PNG, PDF. Maks 5 MB.</p>
+                <input type="file" id="file_lampiran" name="file_lampiran" accept=".jpg,.jpeg,.png,.pdf"
+                    class="w-full text-xs text-slate-600 dark:text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-slate-200 rounded-xl p-2 bg-white">
+                @if ($existing?->file_lampiran)
+                    <p class="text-[11px] text-slate-400 mt-1">
+                        Sudah ada lampiran:
+                        <a href="{{ route('files.logbook', $existing) }}" target="_blank"
+                            class="text-blue-600 hover:underline font-semibold">Lihat file sebelumnya</a>
+                        (Mengunggah file baru akan menggantikannya.)
+                    </p>
+                @endif
+            </div>
+
             <!-- Action Buttons -->
+
             <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
                 <button type="submit" name="status_logbook" value="draft" class="flex-1 py-3 px-4 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors">
                     Simpan sebagai Draf

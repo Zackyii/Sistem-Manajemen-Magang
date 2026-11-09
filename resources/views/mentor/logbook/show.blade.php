@@ -39,7 +39,23 @@
             </div>
         </div>
 
+        @if ($tanggalan->file_lampiran)
+            <div class="p-4 rounded-2xl bg-blue-50 border border-blue-200 flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-blue-900">Lampiran Dokumen</p>
+                    <a href="{{ route('files.logbook', $tanggalan) }}" target="_blank"
+                        class="text-xs text-blue-700 hover:underline font-semibold flex items-center gap-1 mt-0.5">
+                        📎 Lihat / Unduh Lampiran
+                    </a>
+                </div>
+            </div>
+        @endif
+
         @if ($tanggalan->catatan_mentor)
+
             <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 space-y-1 text-amber-900">
                 <span class="font-bold block">Catatan Mentor Sebelumnya:</span>
                 <p>{{ $tanggalan->catatan_mentor }}</p>

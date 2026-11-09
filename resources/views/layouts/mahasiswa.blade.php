@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
 @section('body')
-<div class="min-h-screen flex flex-col bg-slate-50 pb-20 md:pb-6">
+<div class="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 pb-20 md:pb-6">
     <!-- Top Header Navigation -->
-    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200/80 shadow-xs">
+    <header class="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur border-b border-slate-200/80 dark:border-slate-800 shadow-xs">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <button type="button" onclick="toggleSidebar()" class="p-2 -ml-2 rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-600">
@@ -24,11 +24,19 @@
 
             <!-- Profile & Notification -->
             <div class="flex items-center gap-2">
-                <a href="{{ route('mahasiswa.pesan.index') }}" class="relative p-2 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-blue-600 transition-colors">
+                <!-- Theme Toggle -->
+                <button data-theme-toggle onclick="toggleTheme()" title="Ganti Tema"
+                    class="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <svg class="icon-sun w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 5a7 7 0 100 14A7 7 0 0012 5z"/></svg>
+                    <svg class="icon-moon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
+                {{-- FITUR CHAT DINONAKTIFKAN SEMENTARA (Comment-Out Only)
+                <a href="{{ route('mahasiswa.pesan.index') }}" class="relative p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                     </svg>
                 </a>
+                --}}
                 <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
                     <div class="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-800 font-bold text-xs">
                         {{ substr(auth()->user()->mahasiswa->nama ?? auth()->user()->username, 0, 2) }}
@@ -87,10 +95,12 @@
                     Kalender Magang
                 </a>
 
+                {{-- FITUR CHAT DINONAKTIFKAN SEMENTARA (Comment-Out Only)
                 <a href="{{ route('mahasiswa.pesan.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold {{ request()->routeIs('mahasiswa.pesan.*') ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100' }}">
                     <svg class="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                     Pesan & Laporan
                 </a>
+                --}}
 
                 <div class="pt-4 mt-4 border-t border-slate-100">
                     <p class="px-3 text-[11px] font-bold tracking-wider text-slate-400 uppercase mb-1">Informasi & Bantuan</p>
@@ -150,10 +160,12 @@
                 <span>Kalender</span>
             </a>
 
+            {{-- FITUR CHAT DINONAKTIFKAN SEMENTARA (Comment-Out Only)
             <a href="{{ route('mahasiswa.pesan.index') }}" class="flex flex-col items-center gap-0.5 py-1 px-2 rounded-lg text-xs font-medium {{ request()->routeIs('mahasiswa.pesan.*') ? 'text-blue-700 font-bold' : 'text-slate-500 hover:text-slate-800' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
                 <span>Pesan</span>
             </a>
+            --}}
         </div>
     </nav>
 </div>

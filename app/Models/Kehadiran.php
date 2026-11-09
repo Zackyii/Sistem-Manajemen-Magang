@@ -19,9 +19,14 @@ class Kehadiran extends Model
         'waktu_masuk',
         'waktu_keluar',
         'foto_selfie',
+        'file_bukti',
+        'foto_checkout',
         'koordinat_lat',
         'koordinat_lng',
         'nama_lokasi',
+        'koordinat_lat_checkout',
+        'koordinat_lng_checkout',
+        'nama_lokasi_checkout',
         'status',
         'status_mentor',
         'keterangan',
@@ -33,6 +38,8 @@ class Kehadiran extends Model
             'tanggal' => 'date',
             'koordinat_lat' => 'decimal:7',
             'koordinat_lng' => 'decimal:7',
+            'koordinat_lat_checkout' => 'decimal:7',
+            'koordinat_lng_checkout' => 'decimal:7',
         ];
     }
 

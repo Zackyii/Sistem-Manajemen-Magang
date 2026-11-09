@@ -12,7 +12,8 @@ use Illuminate\View\View;
 class DashboardController extends Controller
 {
     /**
-     * Show the mentor dashboard.
+     * Show the mentor dashboard — location monitoring view.
+     * Approve/reject removed; shows attendance + location data for today.
      */
     public function index(): View
     {
@@ -22,26 +23,28 @@ class DashboardController extends Controller
             ? $mentor->bidang->mahasiswas()->where('status_verifikasi', 'disetujui')->get()
             : collect();
 
+        $mahasiswaIds = $mahasiswas->pluck('id');
+
         $stats = [
             'total_mahasiswa' => $mahasiswas->count(),
-            'kehadiran_pending' => Kehadiran::whereIn('mahasiswa_id', $mahasiswas->pluck('id'))
-                ->where('status_mentor', 'pending')
+            'kehadiran_hari_ini' => Kehadiran::whereIn('mahasiswa_id', $mahasiswaIds)
                 ->whereDate('tanggal', today())
                 ->count(),
-            'logbook_pending' => Tanggalan::whereIn('mahasiswa_id', $mahasiswas->pluck('id'))
+            'logbook_pending' => Tanggalan::whereIn('mahasiswa_id', $mahasiswaIds)
                 ->where('status_logbook', 'submitted')
                 ->count(),
-            'kehadiran_hari_ini' => Kehadiran::whereIn('mahasiswa_id', $mahasiswas->pluck('id'))
+            'hadir_hari_ini' => Kehadiran::whereIn('mahasiswa_id', $mahasiswaIds)
                 ->whereDate('tanggal', today())
+                ->whereIn('status', ['hadir', 'terlambat'])
                 ->count(),
         ];
 
+        // Today's attendance with location info — no pending filter (monitoring, not verification)
         $kehadiranHariIni = Kehadiran::with('mahasiswa')
-            ->whereIn('mahasiswa_id', $mahasiswas->pluck('id'))
+            ->whereIn('mahasiswa_id', $mahasiswaIds)
             ->whereDate('tanggal', today())
-            ->where('status_mentor', 'pending')
             ->latest()
-            ->take(5)
+            ->take(10)
             ->get();
 
         return view('mentor.dashboard', compact('mentor', 'mahasiswas', 'stats', 'kehadiranHariIni'));

@@ -8,8 +8,7 @@
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 p-6 text-white shadow-xl">
         <div class="relative z-10">
             <div class="flex items-center justify-between">
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-amber-300 backdrop-blur-md border border-white/10">
-                    <span class="h-2 w-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="inline-flex items-center rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-amber-300 backdrop-blur-md border border-white/10">
                     Magang Aktif
                 </span>
                 <span class="text-xs text-blue-200 font-medium">{{ now()->translatedFormat('l, d F Y') }}</span>
