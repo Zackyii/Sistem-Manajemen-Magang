@@ -15,24 +15,24 @@
     <!-- Header with Month Switcher -->
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-xl font-extrabold text-slate-900 font-heading">Kalender Aktivitas</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Pantau Jadwal Tugas, Kehadiran, dan Event Magang</p>
+            <h1 class="text-xl font-extrabold text-slate-900 dark:text-white font-heading">Kalender Aktivitas</h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pantau Jadwal Tugas, Kehadiran, dan Event Magang</p>
         </div>
-        <div class="flex items-center gap-1 bg-white p-1 rounded-2xl shadow-xs border border-slate-200">
-            <a href="{{ route('mahasiswa.tanggalan.index', ['bulan' => $prevMonth->month, 'tahun' => $prevMonth->year]) }}" class="p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+        <div class="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-2xl shadow-xs border border-slate-200 dark:border-slate-700">
+            <a href="{{ route('mahasiswa.tanggalan.index', ['bulan' => $prevMonth->month, 'tahun' => $prevMonth->year]) }}" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </a>
-            <span class="px-3 py-1 text-xs font-bold text-slate-800">
+            <span class="px-3 py-1 text-xs font-bold text-slate-800 dark:text-slate-200">
                 {{ $currentDate->translatedFormat('F Y') }}
             </span>
-            <a href="{{ route('mahasiswa.tanggalan.index', ['bulan' => $nextMonth->month, 'tahun' => $nextMonth->year]) }}" class="p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+            <a href="{{ route('mahasiswa.tanggalan.index', ['bulan' => $nextMonth->month, 'tahun' => $nextMonth->year]) }}" class="p-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </a>
         </div>
     </div>
 
     <!-- Calendar Legend -->
-    <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600 bg-white p-3 rounded-2xl border border-slate-200/80">
+    <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-700">
         <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Hadir</span>
         <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Terlambat</span>
         <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Ada Tugas</span>
@@ -40,9 +40,9 @@
     </div>
 
     <!-- Calendar Grid Card -->
-    <div class="rounded-3xl bg-white p-5 shadow-sm border border-slate-200/90 overflow-hidden">
+    <div class="rounded-3xl bg-white dark:bg-slate-800 p-5 shadow-sm border border-slate-200/90 dark:border-slate-700 overflow-hidden">
         <!-- Day Names -->
-        <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-slate-400 mb-2 uppercase tracking-wider">
+        <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-slate-400 dark:text-slate-500 mb-2 uppercase tracking-wider">
             <div class="py-2">Sen</div>
             <div class="py-2">Sel</div>
             <div class="py-2">Rab</div>
@@ -56,7 +56,7 @@
         <div class="grid grid-cols-7 gap-1 sm:gap-2">
             <!-- Empty offset days -->
             @for ($i = 1; $i < $firstDayOfWeek; $i++)
-                <div class="h-20 sm:h-24 rounded-xl bg-slate-50/40 opacity-40"></div>
+                <div class="h-20 sm:h-24 rounded-xl bg-slate-50/40 dark:bg-slate-900/20 opacity-40"></div>
             @endfor
 
             <!-- Month Days -->
@@ -69,9 +69,15 @@
                     $isWeekend = $loopDate->isWeekend();
                 @endphp
 
-                <div onclick="openDateDetail('{{ $dateStr }}', '{{ $loopDate->translatedFormat('l, d F Y') }}')" class="h-20 sm:h-24 p-2 rounded-xl border border-slate-100 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between {{ $isToday ? 'bg-blue-50/60 border-blue-300 ring-2 ring-blue-600/20' : ($isWeekend ? 'bg-slate-50/80 text-slate-400' : 'bg-white') }}">
+                <div onclick="openDateDetail('{{ $dateStr }}', '{{ $loopDate->translatedFormat('l, d F Y') }}')"
+                    class="h-20 sm:h-24 p-2 rounded-xl border hover:border-blue-400 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between
+                    {{ $isToday
+                        ? 'bg-blue-50/60 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600 ring-2 ring-blue-600/20'
+                        : ($isWeekend
+                            ? 'bg-slate-50/80 dark:bg-slate-900/30 border-slate-100 dark:border-slate-700/50 text-slate-400'
+                            : 'bg-white dark:bg-slate-800/60 border-slate-100 dark:border-slate-700') }}">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold {{ $isToday ? 'text-blue-700 font-extrabold' : ($isWeekend ? 'text-rose-500' : 'text-slate-800') }}">
+                        <span class="text-xs font-bold {{ $isToday ? 'text-blue-700 dark:text-blue-400 font-extrabold' : ($isWeekend ? 'text-rose-500' : 'text-slate-800 dark:text-slate-200') }}">
                             {{ $day }}
                         </span>
                         @if ($isToday)
@@ -82,13 +88,13 @@
                     <!-- Indicators -->
                     <div class="space-y-1">
                         @if ($item && $item->info_tugas)
-                            <div class="truncate text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 text-blue-800">
+                            <div class="truncate text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300">
                                 📌 {{ $item->info_tugas }}
                             </div>
                         @endif
 
                         @if ($item && $item->aktivitas_utama)
-                            <div class="truncate text-[9px] font-medium px-1 rounded bg-purple-50 text-purple-700">
+                            <div class="truncate text-[9px] font-medium px-1 rounded bg-purple-50 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
                                 📝 Logbook
                             </div>
                         @endif
@@ -101,18 +107,18 @@
 
 <!-- Modal Detail Tanggal -->
 <div id="date-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100">
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100 dark:border-slate-700">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
             <div>
-                <h3 id="modal-date-title" class="font-bold text-base text-slate-900">Detail Aktivitas</h3>
-                <p id="modal-date-subtitle" class="text-xs text-slate-500"></p>
+                <h3 id="modal-date-title" class="font-bold text-base text-slate-900 dark:text-white">Detail Aktivitas</h3>
+                <p id="modal-date-subtitle" class="text-xs text-slate-500 dark:text-slate-400"></p>
             </div>
-            <button onclick="closeDateModal()" class="text-slate-400 hover:text-slate-600 p-1">
+            <button onclick="closeDateModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
 
-        <div id="modal-loading" class="py-8 text-center text-xs text-slate-500">
+        <div id="modal-loading" class="py-8 text-center text-xs text-slate-500 dark:text-slate-400">
             <svg class="w-6 h-6 animate-spin mx-auto text-blue-600 mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
             Memuat data...
         </div>
@@ -121,8 +127,8 @@
             <!-- Dynamic Content Injected by JS -->
         </div>
 
-        <div class="pt-3 border-t border-slate-100 flex justify-end gap-2">
-            <button type="button" onclick="closeDateModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200">
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-end gap-2">
+            <button type="button" onclick="closeDateModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">
                 Tutup
             </button>
             <a id="btn-add-logbook" href="#" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-700 hover:bg-blue-800">
@@ -157,7 +163,7 @@
 
             if (!data) {
                 content.innerHTML = `
-                    <div class="p-4 rounded-xl bg-slate-50 text-center text-slate-500">
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-700 text-center text-slate-500 dark:text-slate-400">
                         Belum ada aktivitas atau tugas yang tercatat pada tanggal ini.
                     </div>
                 `;
@@ -167,21 +173,21 @@
             let html = '';
             if (data.info_tugas) {
                 html += `
-                    <div class="p-3.5 rounded-xl bg-blue-50 border border-blue-100">
-                        <span class="font-bold text-blue-900 block">📌 Tugas: ${data.info_tugas}</span>
-                        <span class="text-blue-700 text-[11px]">Tenggat: ${data.deadline_tugas || 'Fleksibel'}</span>
+                    <div class="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800">
+                        <span class="font-bold text-blue-900 dark:text-blue-300 block">📌 Tugas: ${data.info_tugas}</span>
+                        <span class="text-blue-700 dark:text-blue-400 text-[11px]">Tenggat: ${data.deadline_tugas || 'Fleksibel'}</span>
                     </div>
                 `;
             }
 
             if (data.aktivitas_utama) {
                 html += `
-                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                        <span class="font-bold text-slate-900 block">📝 Logbook: ${data.aktivitas_utama}</span>
-                        <p class="text-slate-600 mt-1 leading-relaxed">${data.deskripsi_kegiatan || ''}</p>
-                        <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600">
+                        <span class="font-bold text-slate-900 dark:text-white block">📝 Logbook: ${data.aktivitas_utama}</span>
+                        <p class="text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">${data.deskripsi_kegiatan || ''}</p>
+                        <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
                             <span>Durasi: <strong>${data.durasi_jam} Jam</strong></span>
-                            <span class="font-bold text-emerald-600">Status: ${data.status_logbook}</span>
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">Status: ${data.status_logbook}</span>
                         </div>
                     </div>
                 `;
@@ -191,7 +197,7 @@
         } catch (err) {
             loading.classList.add('hidden');
             content.classList.remove('hidden');
-            content.innerHTML = `<p class="text-rose-500">Gagal memuat detail data.</p>`;
+            content.innerHTML = `<p class="text-rose-500 dark:text-rose-400">Gagal memuat detail data.</p>`;
         }
     }
 
