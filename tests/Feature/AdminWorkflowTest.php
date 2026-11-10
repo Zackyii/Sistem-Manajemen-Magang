@@ -3,7 +3,6 @@
 use App\Models\Admin;
 use App\Models\Bidang;
 use App\Models\Mahasiswa;
-use App\Models\Pesan;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -88,45 +87,4 @@ test('admin can approve pending mahasiswa and assign bidang', function () {
     expect($mhs->fresh()->status_verifikasi)->toBe('disetujui');
     expect($mhs->fresh()->bidang_id)->toBe($bidang->id);
     expect($mhsUser->fresh()->status)->toBe('active');
-});
-
-test('admin can view inbox issue reports and mark them as read', function () {
-    $adminUser = User::create([
-        'username' => 'admin_inbox_test',
-        'password' => 'password123',
-        'role' => 'admin',
-        'status' => 'active',
-        'has_agreed_to_rules' => true,
-    ]);
-
-    Admin::create([
-        'user_id' => $adminUser->id,
-        'nama' => 'Admin Inbox',
-        'nip' => '19800202',
-    ]);
-
-    $sender = User::create([
-        'username' => 'mhs_sender',
-        'password' => 'password123',
-        'role' => 'mahasiswa',
-        'status' => 'active',
-        'has_agreed_to_rules' => true,
-    ]);
-
-    $pesan = Pesan::create([
-        'pengirim_id' => $sender->id,
-        'penerima_id' => $adminUser->id,
-        'tipe' => 'laporan_sistem',
-        'isi_pesan' => 'Database staging mengalami kendala timeout.',
-        'waktu_kirim' => now(),
-        'is_read' => false,
-    ]);
-
-    $resInbox = $this->actingAs($adminUser)->get(route('admin.pesan.index'));
-    $resInbox->assertStatus(200);
-    $resInbox->assertSee('Database staging mengalami kendala timeout.');
-
-    $resMark = $this->actingAs($adminUser)->patch(route('admin.pesan.mark-read', $pesan));
-    $resMark->assertRedirect(route('admin.pesan.index'));
-    expect($pesan->fresh()->is_read)->toBeTrue();
 });

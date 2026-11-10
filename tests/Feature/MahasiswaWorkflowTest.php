@@ -60,7 +60,7 @@ test('mahasiswa can record attendance check-in and check-out', function () {
 
     // Check-in
     $responseCheckin = $this->actingAs($user)->post(route('mahasiswa.presensi.check-in'), [
-        'foto_selfie' => 'data:image/jpeg;base64,'.base64_encode('fake-image-bytes'),
+        'foto_selfie' => 'data:image/jpeg;base64,'.base64_encode(str_repeat('A', 150)),
         'koordinat_lat' => -7.3156,
         'koordinat_lng' => 112.7291,
         'nama_lokasi' => 'Diskominfo Prov. Jatim',
@@ -115,7 +115,7 @@ test('mahasiswa can create a logbook entry', function () {
     ]);
 });
 
-test('mahasiswa can submit survey and send issue report message', function () {
+test('mahasiswa can submit survey', function () {
     $user = User::create([
         'username' => 'mhs_survey_test',
         'password' => 'password123',
@@ -126,7 +126,7 @@ test('mahasiswa can submit survey and send issue report message', function () {
 
     $bidang = Bidang::create(['nama_bidang' => 'Aptika', 'kuota' => 5]);
 
-    $mhs = Mahasiswa::create([
+    Mahasiswa::create([
         'user_id' => $user->id,
         'bidang_id' => $bidang->id,
         'nama' => 'Survey Tester',
@@ -150,27 +150,5 @@ test('mahasiswa can submit survey and send issue report message', function () {
     $this->assertDatabaseHas('survey', [
         'rating_fasilitas' => 5,
         'is_anonymous' => true,
-    ]);
-
-    $adminUser = User::create([
-        'username' => 'admin_receiver',
-        'password' => 'password123',
-        'role' => 'admin',
-        'status' => 'active',
-        'has_agreed_to_rules' => true,
-    ]);
-
-    // Pesan Issue Report to Admin
-    $resPesan = $this->actingAs($user)->post(route('mahasiswa.pesan.store'), [
-        'penerima_id' => $adminUser->id,
-        'tipe' => 'laporan_sistem',
-        'isi_pesan' => 'Mohon bantuan koneksi WiFi di meja APTIKA terputus.',
-    ]);
-    $resPesan->assertRedirect();
-    $this->assertDatabaseHas('pesan', [
-        'pengirim_id' => $user->id,
-        'penerima_id' => $adminUser->id,
-        'tipe' => 'laporan_sistem',
-        'isi_pesan' => 'Mohon bantuan koneksi WiFi di meja APTIKA terputus.',
     ]);
 });

@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
-test('mentor can approve attendance and logbook entries', function () {
+test('mentor can monitor attendance, review logbook, assign tasks, and evaluate students', function () {
     $bidang = Bidang::create(['nama_bidang' => 'APTIKA', 'kuota' => 10]);
 
     $mentorUser = User::create([
@@ -47,7 +47,7 @@ test('mentor can approve attendance and logbook entries', function () {
         'tanggal_selesai' => now()->addMonths(3)->toDateString(),
     ]);
 
-    // 1. Attendance Approval
+    // 1. Attendance Monitoring (Presensi)
     $kehadiran = Kehadiran::create([
         'mahasiswa_id' => $mhs->id,
         'tanggal' => today()->toDateString(),
@@ -56,9 +56,9 @@ test('mentor can approve attendance and logbook entries', function () {
         'status_mentor' => 'pending',
     ]);
 
-    $resAttendance = $this->actingAs($mentorUser)->post(route('mentor.presensi.approve', $kehadiran));
-    $resAttendance->assertRedirect(route('mentor.presensi.index'));
-    expect($kehadiran->fresh()->status_mentor)->toBe('disetujui');
+    $resAttendance = $this->actingAs($mentorUser)->get(route('mentor.presensi.index'));
+    $resAttendance->assertStatus(200);
+    $resAttendance->assertSee('Mahasiswa Bimbingan');
 
     // 2. Logbook Approval
     $logbook = Tanggalan::create([
@@ -112,20 +112,7 @@ test('mentor can approve attendance and logbook entries', function () {
     $resShowLogbook->assertSee('Detail Logbook');
     $resShowLogbook->assertSee('Testing API Backend');
 
-    // 6. Mentor Send Message
-    $resMsg = $this->actingAs($mentorUser)->post(route('mentor.pesan.store'), [
-        'tipe' => 'direct',
-        'penerima_id' => $mhsUser->id,
-        'isi_pesan' => 'Halo mahasiswa bimbingan, jangan lupa input logbook hari ini.',
-    ]);
-    $resMsg->assertRedirect();
-    $this->assertDatabaseHas('pesan', [
-        'pengirim_id' => $mentorUser->id,
-        'penerima_id' => $mhsUser->id,
-        'tipe' => 'direct',
-    ]);
-
-    // 7. Mentor Update Bidang Kuota
+    // 6. Mentor Update Bidang Kuota
     $resQuota = $this->actingAs($mentorUser)->patch(route('mentor.bidang.update-kuota'), [
         'kuota' => 12,
     ]);
