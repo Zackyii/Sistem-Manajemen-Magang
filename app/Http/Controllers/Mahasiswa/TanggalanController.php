@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Mahasiswa;
 
 use App\Http\Controllers\Controller;
+use App\Models\Kehadiran;
 use App\Models\Tanggalan;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,7 +27,18 @@ class TanggalanController extends Controller
             ->get()
             ->keyBy(fn ($t) => $t->tanggal->format('Y-m-d'));
 
-        return view('mahasiswa.tanggalan.index', compact('mahasiswa', 'tanggalan', 'bulan', 'tahun'));
+        $kehadiran = Kehadiran::where('mahasiswa_id', $mahasiswa->id)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->get()
+            ->groupBy(fn ($k) => $k->tanggal->format('Y-m-d'))
+            ->map(function ($items) {
+                return $items->firstWhere('status', 'hadir')
+                    ?? $items->firstWhere('status', 'terlambat')
+                    ?? $items->first();
+            });
+
+        return view('mahasiswa.tanggalan.index', compact('mahasiswa', 'tanggalan', 'kehadiran', 'bulan', 'tahun'));
     }
 
     /**

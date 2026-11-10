@@ -65,6 +65,7 @@
                     $loopDate = \Carbon\Carbon::createFromDate($tahun, $bulan, $day);
                     $dateStr = $loopDate->format('Y-m-d');
                     $item = $tanggalan->get($dateStr);
+                    $absen = $kehadiran->get($dateStr);
                     $isToday = $loopDate->isToday();
                     $isWeekend = $loopDate->isWeekend();
                 @endphp
@@ -80,9 +81,17 @@
                         <span class="text-xs font-bold {{ $isToday ? 'text-blue-700 dark:text-blue-400 font-extrabold' : ($isWeekend ? 'text-rose-500' : 'text-slate-800 dark:text-slate-200') }}">
                             {{ $day }}
                         </span>
-                        @if ($isToday)
-                            <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
-                        @endif
+                        <div class="flex items-center gap-1">
+                            @if ($absen && $absen->status === 'hadir')
+                                <span class="w-2 h-2 rounded-full bg-emerald-500" title="Hadir"></span>
+                            @elseif ($absen && $absen->status === 'terlambat')
+                                <span class="w-2 h-2 rounded-full bg-amber-500" title="Terlambat"></span>
+                            @endif
+
+                            @if ($isToday)
+                                <span class="w-1.5 h-1.5 rounded-full bg-blue-600" title="Hari Ini"></span>
+                            @endif
+                        </div>
                     </div>
 
                     <!-- Indicators -->
